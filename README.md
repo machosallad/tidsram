@@ -14,3 +14,7 @@ The code and build is inspired by the following makers:
 - Display the current time with resolution of five minutes.
 - Pygame to run the main loop consistently.
 - Abstract display allows development without access to WS2812B LEDs.
+
+## Font
+
+D-DIN font by Datto licensed under the [SIL Open Font License (OFL)](https://scripts.sil.org/cms/scripts/page.php?site_id=nrsi&id=OFL).
