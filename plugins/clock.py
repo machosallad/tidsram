@@ -7,17 +7,66 @@ import datetime
 from plugins.abstract import AbstractSource
 import json
 
+layout = {
+    "prefix": {
+        "she": {"word": "HON", "index": 0},
+        "is":  {"word": "ÄR", "index": 4},
+        "soon": {"word": "SNART", "index": 7}
+    },
+    "minutes": {
+        "five": {"word": "FEM", "index": 30},
+        "ten": {"word": "TIO", "index": 18},
+        "quarter": {"word": "KVART", "index": 30},
+        "twenty": {"word": "TJUGO", "index": 24},
+        "half": {"word": "HALV", "index": 44},
+        "to": {"word": "I", "index": 40},
+        "past": {"word": "ÖVER", "index": 36}
+    },
+    "hours": {
+        "one": {"word": "ETT", "index": 48},
+        "two": {"word": "TVÅ", "index": 50},
+        "three": {"word": "TRE", "index": 53},
+        "four": {"word": "FYRA", "index": 56},
+        "five": {"word": "FEM", "index": 60},
+        "six": {"word": "SEX", "index": 63},
+        "seven": {"word": "SJU", "index": 66},
+        "eight": {"word": "ÅTTA", "index": 72},
+        "nine": {"word": "NIO", "index": 69},
+        "ten": {"word": "TIO", "index": 84},
+        "eleven": {"word": "ELVA", "index": 76},
+        "twelve": {"word": "TOLV", "index": 80}
+    },
+    "day": {
+        "monday": {"word": "M", "index": 132},
+        "tuesday": {"word": "T", "index": 133},
+        "wednesday": {"word": "O", "index": 134},
+        "thursday": {"word": "T", "index": 135},
+        "friday": {"word": "F", "index": 136},
+        "saturday": {"word": "L", "index": 137},
+        "sunday": {"word": "S", "index": 138}
+    },
+    "others": [
+        {"word": "JMELIN", "index": 139}
+        ]
+}
+
+def indexes(entry):
+    word = entry["word"]
+    index = entry["index"]
+    length = len(word)
+    return [*range(index,index+length)]
+
 # Words to LED indexes mapping
 words = {
     "prefix": {
-        "she": [0,1,2],
-        "is":  [4,5],
-        "soon": [7,8,9,10,11],
+        "she": [0, 1, 2],
+        "is":  [4, 5],
+        "soon": [7, 8, 9, 10, 11],
     },
     "minutes": {
         "five": [30, 31, 32],
         "ten": [18, 19, 20],
-        "quarter": [12,13,14,15,16],
+        "quarter": [12, 13, 14, 15, 16],
         "twenty": [24, 25, 26, 27, 28],
         "half": [44, 45, 46, 47],
         "to": [40],
@@ -48,64 +97,74 @@ words = {
     }
 }
 
-prefix = [words["prefix"]["she"] + words["prefix"]["is"]]
-soon = [words["prefix"]["soon"]]
-
-minutes = [[],
-           words["minutes"]["five"] + words["minutes"]["past"],
-           words["minutes"]["ten"] + words["minutes"]["past"],
-           words["minutes"]["quarter"] + words["minutes"]["past"],
-           words["minutes"]["twenty"] + words["minutes"]["past"],
-           words["minutes"]["five"] + words["minutes"]["to"] + words["minutes"]["half"],
-           words["minutes"]["half"],
-           words["minutes"]["five"] + words["minutes"]["past"] + words["minutes"]["half"],
-           words["minutes"]["twenty"] + words["minutes"]["to"],
-           words["minutes"]["quarter"] + words["minutes"]["to"],
-           words["minutes"]["ten"] + words["minutes"]["to"],
-           words["minutes"]["five"] + words["minutes"]["to"],
-           []
-           ]
-hours = [
-    words["hours"]["twelve"],
-    words["hours"]["one"],
-    words["hours"]["two"],
-    words["hours"]["three"],
-    words["hours"]["four"],
-    words["hours"]["five"],
-    words["hours"]["six"],
-    words["hours"]["seven"],
-    words["hours"]["eight"],
-    words["hours"]["nine"],
-    words["hours"]["ten"],
-    words["hours"]["eleven"],
-    words["hours"]["twelve"]
-]
-
-weekdays = [
-    words["day"]["monday"],
-    words["day"]["tuesday"],
-    words["day"]["wednesday"],
-    words["day"]["thursday"],
-    words["day"]["friday"],
-    words["day"]["saturday"],
-    words["day"]["sunday"]
-]
-
 SIMULATE = True
 
 class ClockSource(AbstractSource):
     def __init__(self, width=16, height=16):
         """Init the class"""
         super().__init__(width, height)
-        self.fps = 20
+        self.fps = 10
 
         self._sim_hour = 0
         self._sim_minute = 0
         self._sim_second = 0
         self._sim_weekday = 0
 
-        self._on_color = (255,255,255)
-        self._off_color = (100,100,100)
+        self.minutes = []
+        self.hours = []
+        self.weekdays = []
+        self.prefix = []
+        self.soon = []
+
+        self.__construct_word_arrays()
+
+        self._on_color = (255, 255, 255)
+        self._off_color = (100, 100, 100)
+
+    def __construct_word_arrays(self):
+        self.prefix = [words["prefix"]["she"] + words["prefix"]["is"]]
+        self.soon = [words["prefix"]["soon"]]
+
+        self.minutes = [[],
+                        indexes(layout["minutes"]["five"]) + words["minutes"]["past"],
+                        words["minutes"]["ten"] + words["minutes"]["past"],
+                        words["minutes"]["quarter"] + words["minutes"]["past"],
+                        words["minutes"]["twenty"] + words["minutes"]["past"],
+                        words["minutes"]["five"] + words["minutes"]["to"] +
+                        words["minutes"]["half"],
+                        words["minutes"]["half"],
+                        words["minutes"]["five"] + words["minutes"]["past"] +
+                        words["minutes"]["half"],
+                        words["minutes"]["twenty"] + words["minutes"]["to"],
+                        words["minutes"]["quarter"] + words["minutes"]["to"],
+                        words["minutes"]["ten"] + words["minutes"]["to"],
+                        words["minutes"]["five"] + words["minutes"]["to"],
+                        []
+                        ]
+        self.hours = [
+            words["hours"]["twelve"],
+            words["hours"]["one"],
+            words["hours"]["two"],
+            words["hours"]["three"],
+            words["hours"]["four"],
+            words["hours"]["five"],
+            words["hours"]["six"],
+            words["hours"]["seven"],
+            words["hours"]["eight"],
+            words["hours"]["nine"],
+            words["hours"]["ten"],
+            words["hours"]["eleven"],
+            words["hours"]["twelve"]
+        ]
+        self.weekdays = [
+            words["day"]["monday"],
+            words["day"]["tuesday"],
+            words["day"]["wednesday"],
+            words["day"]["thursday"],
+            words["day"]["friday"],
+            words["day"]["saturday"],
+            words["day"]["sunday"]
+        ]
 
     @property
     def on_color(self):
@@ -125,7 +184,8 @@ class ClockSource(AbstractSource):
 
     def update(self, dt):
         """Update the source. Checks current time and refreshes the internal buffer."""
-        hour, minute, second, weekday = self.__getCurrentTime() if not SIMULATE else self.__getSimulateTime()
+        hour, minute, second, weekday = self.__getCurrentTime(
+        ) if not SIMULATE else self.__getSimulateTime()
         self._buffer = self.__construct_buffer(hour, minute, second, weekday)
 
     def __getCurrentTime(self):
@@ -138,10 +198,10 @@ class ClockSource(AbstractSource):
         """Get simulated time information."""
         self._sim_hour += 1
         if self._sim_hour % 24 == 0:
-            self._sim_minute +=1
-            self._sim_weekday +=1
+            self._sim_minute += 1
+            self._sim_weekday += 1
             if self._sim_minute % 60 == 0:
-                self._sim_second +=30
+                self._sim_second += 30
 
         return self._sim_hour % 24, self._sim_minute % 60, self._sim_second % 60, self._sim_weekday % 7
 
@@ -149,22 +209,22 @@ class ClockSource(AbstractSource):
         """Get array of indexes which map with words to light up."""
         # Check if an hour should be added
         additional_hour = 1 if (minute >= 35) else 0
-        
+
         hour_index = hour % 12 + additional_hour
         minute_index = int(minute/5)
 
         strax = []
-        if minute/5 % 1 > 0.7: 
-            minute_index +=1
-            strax = soon[0]
+        if minute/5 % 1 > 0.7:
+            minute_index += 1
+            strax = self.soon[0]
 
-        return prefix[0] + minutes[minute_index] + hours[hour_index] + weekdays[weekday] + strax
+        return self.prefix[0] + self.minutes[minute_index] + self.hours[hour_index] + self.weekdays[weekday] + strax
 
     def __construct_buffer(self, hour, minute, second, weekday):
         """Construct display buffer given the current time and weekday."""
         buffer = np.zeros((self.height, self.width, 3), dtype=np.uint8)
 
-        led_indexes = self.__constructIndexes(hour,minute,second,weekday)
+        led_indexes = self.__constructIndexes(hour, minute, second, weekday)
 
         index = 0
         for column in range(self.width):
