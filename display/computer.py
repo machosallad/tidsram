@@ -3,6 +3,7 @@
 import sys
 import pygame
 import random
+import json
 
 from display.abstract_display import AbstractDisplay
 from array import *
@@ -17,9 +18,8 @@ DARKGRAY = (20, 20, 20)
 WHITE = (255, 255, 255)
 
 # Settings
-FILL_EMPTY = True
+FILL_EMPTY = False
 SHOW_INDEX = False
-
 
 class Computer(AbstractDisplay):
     def __init__(self, width=12, height=12, margin=5, size=50):
@@ -38,29 +38,32 @@ class Computer(AbstractDisplay):
         self.index_font = pygame.font.SysFont("arial", 12)
         self.char_font = pygame.font.Font('fonts/D-DINExp-Bold.ttf', self.size)
 
-        self.words = [
-            ["H", "O", "N", " ", "Ä", "R", " ", "S", "N", "A", "R", "T"],
-            ["K", "V", "A", "R", "T", " ", "T", "I", "O", " ", " ", " "],
-            ["T", "J", "U", "G", "O", " ", "F", "E", "M", " ", " ", " "],
-            ["Ö", "V", "E", "R", "I", " ", " ", " ", "H", "A", "L", "V"],
-            ["E", "T", "T", "V", "Å", "T", "R", "E", "F", "Y", "R", "A"],
-            ["F", "E", "M", "S", "E", "X", "S", "J", "U", "N", "I", "O"],
-            ["Å", "T", "T", "A", "E", "L", "V", "A", "T", "O", "L", "V"],
-            ["T", "I", "O", " ", " ", " ", " ", " ", " ", " ", " ", " "],
-            [" ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " "],
-            [" ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " "],
-            [" ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " "],
-            ["M", "T", "O", "T", "F", "L", "S", "M", "E", "L", "I", "N"]
-        ]
+        # Prepare word list
+        self.words = []
+        for i in range(self.width*self.height):
+            self.words.append("")
+
+        # Load layout
+        f = open('layouts/swedish.json')
+        layout = json.load(f)
+        
+        # Read layout words
+        for category in layout:
+            for words in layout[category]:
+                word = layout[category][words]['word']
+                index = int(layout[category][words]['index'])
+                for char in word:
+                    self.words[index] = char
+                    index +=1
 
         # Add random letters to empty slots
         if FILL_EMPTY:
-            for j in range(self.width):
-                for i in range(self.height):
-                    if self.words[i][j] == " ":
-                        uppercase = 'ABCDEFGHIJKLMNOPQRSTUVXYZ'
-                        self.words[i][j] = random.choice(uppercase)
+            for i in range(self.width*self.height):
+                if self.words[i] == "":
+                    uppercase = 'ABCDEFGHIJKLMNOPQRSTUVXYZ'
+                    self.words[i] = random.choice(uppercase)
 
+        # Create the window
         self.surface = pygame.display.set_mode(self.window_size)
         pygame.display.set_caption("ord-klocka {}x{}".format(width, height))
         self.show()
@@ -84,7 +87,7 @@ class Computer(AbstractDisplay):
 
                 # Draw characters from words array
                 character = self.char_font.render(
-                    self.words[i][j], True, color)
+                    self.words[i*self.width+j], True, color)
                 self.surface.blit(character,
                                   [(self.margin + self.size) * j + self.margin*3,
                                    (self.margin + self.size) * i + self.margin,
