@@ -20,7 +20,7 @@ class ClockSource(AbstractSource):
     def __init__(self, width=16, height=16):
         """Init the class"""
         super().__init__(width, height)
-        self.fps = 10
+        self.fps = 5
 
         self._sim_hour = 0
         self._sim_minute = 0
@@ -39,7 +39,7 @@ class ClockSource(AbstractSource):
         self.__construct_word_arrays()
 
     def __construct_word_arrays(self):
-        f = open('layouts/swedish.json',)
+        f = open('layouts/swedish2.json',)
         layout = json.load(f)
 
         self.prefix = indexes(layout["prefix"]["she"]) + indexes(layout["prefix"]["is"])

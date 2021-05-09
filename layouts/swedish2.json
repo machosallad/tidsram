@@ -1,0 +1,42 @@
+{
+    "prefix": {
+        "she": {"word": "HON", "index": 0},
+        "is":  {"word": "ÄR", "index": 4},
+        "soon": {"word": "SNART", "index": 7}
+    },
+    "minutes": {
+        "five": {"word": "FEM", "index": 31},
+        "ten": {"word": "TIO", "index": 25},
+        "quarter": {"word": "KVART", "index": 12},
+        "twenty": {"word": "TJUGO", "index": 18},
+        "half": {"word": "HALV", "index": 44},
+        "to": {"word": "I", "index": 42},
+        "past": {"word": "ÖVER", "index": 36}
+    },
+    "hours": {
+        "one": {"word": "ETT", "index": 48},
+        "two": {"word": "TVÅ", "index": 52},
+        "three": {"word": "TRE", "index": 56},
+        "four": {"word": "FYRA", "index": 61},
+        "five": {"word": "FEM", "index": 66},
+        "six": {"word": "SEX", "index": 74},
+        "seven": {"word": "SJU", "index": 79},
+        "eight": {"word": "ÅTTA", "index": 88},
+        "nine": {"word": "NIO", "index": 97},
+        "ten": {"word": "TIO", "index": 103},
+        "eleven": {"word": "ELVA", "index": 110},
+        "twelve": {"word": "TOLV", "index": 127}
+    },
+    "day": {
+        "monday": {"word": "M", "index": 132},
+        "tuesday": {"word": "T", "index": 133},
+        "wednesday": {"word": "O", "index": 134},
+        "thursday": {"word": "T", "index": 135},
+        "friday": {"word": "F", "index": 136},
+        "saturday": {"word": "L", "index": 137},
+        "sunday": {"word": "S", "index": 138}
+    },
+    "others": {
+        "1": {"word": "MELIN", "index": 139}
+    }
+}

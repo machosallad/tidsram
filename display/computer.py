@@ -18,7 +18,7 @@ DARKGRAY = (20, 20, 20)
 WHITE = (255, 255, 255)
 
 # Settings
-FILL_EMPTY = False
+FILL_EMPTY = True
 SHOW_INDEX = False
 
 class Computer(AbstractDisplay):
@@ -44,7 +44,7 @@ class Computer(AbstractDisplay):
             self.words.append("")
 
         # Load layout
-        f = open('layouts/swedish.json')
+        f = open('layouts/swedish2.json')
         layout = json.load(f)
         
         # Read layout words
