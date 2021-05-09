@@ -44,7 +44,7 @@ class Computer(AbstractDisplay):
             self.words.append("")
 
         # Load layout
-        f = open('layouts/swedish2.json')
+        f = open('layouts/swedish3.json',encoding='utf-8')
         layout = json.load(f)
         
         # Read layout words
