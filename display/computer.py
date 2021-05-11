@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-
+import configparser
 import sys
 import pygame
 import random
@@ -17,10 +17,6 @@ GRAY = (100, 100, 100)
 DARKGRAY = (20, 20, 20)
 WHITE = (255, 255, 255)
 
-# Settings
-FILL_EMPTY = True
-SHOW_INDEX = False
-
 class Computer(AbstractDisplay):
     def __init__(self, width=12, height=12, margin=5, size=50):
         super().__init__(width, height)
@@ -34,6 +30,12 @@ class Computer(AbstractDisplay):
         pygame.init()
         pygame.font.init()
 
+        self.config = configparser.ConfigParser()
+        self.config.read("settings.conf")
+
+        self.fill_empty = self.config.getboolean('tidsram_computer','fill_empty')
+        self.show_index = self.config.getboolean('tidsram_computer','show_index')
+
         # Load fonts
         self.index_font = pygame.font.SysFont("arial", 12)
         self.char_font = pygame.font.Font('fonts/D-DINExp-Bold.ttf', self.size)
@@ -44,7 +46,8 @@ class Computer(AbstractDisplay):
             self.words.append("")
 
         # Load layout
-        f = open('layouts/swedish3.json',encoding='utf-8')
+        layout = self.config.get("tidsram_display","layout")
+        f = open(layout,encoding='utf-8')
         layout = json.load(f)
         
         # Read layout words
@@ -57,7 +60,7 @@ class Computer(AbstractDisplay):
                     index +=1
 
         # Add random letters to empty slots
-        if FILL_EMPTY:
+        if self.fill_empty:
             for i in range(self.width*self.height):
                 if self.words[i] == "":
                     uppercase = 'ABCDEFGHIJKLMNOPQRSTUVXYZ'
@@ -95,7 +98,7 @@ class Computer(AbstractDisplay):
                                     self.size])
 
                 # Draw index number of current character
-                if SHOW_INDEX:
+                if self.show_index:
                     index_as_img = self.index_font.render(
                         str(i*self.width+j), True, WHITE)
                     self.surface.blit(index_as_img,

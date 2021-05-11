@@ -6,6 +6,7 @@ import numpy as np
 import datetime
 from plugins.abstract import AbstractSource
 import json
+import configparser
 
 def indexes(entry):
     """Words to LED indexes mapping."""
@@ -20,6 +21,9 @@ class ClockSource(AbstractSource):
     def __init__(self, width=16, height=16):
         """Init the class"""
         super().__init__(width, height)
+        self.config = configparser.ConfigParser()
+        self.config.read("settings.conf")
+
         self.fps = 5
 
         self._sim_hour = 0
@@ -32,6 +36,7 @@ class ClockSource(AbstractSource):
         self.weekdays = []
         self.prefix = []
         self.soon = []
+        self.simulate = self.config.getboolean('tidsram','simulate')
 
         self._on_color = (255, 255, 255)
         self._off_color = (100, 100, 100)

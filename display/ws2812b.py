@@ -3,6 +3,7 @@
 import numpy as np
 import sys
 from display.abstract_display import AbstractDisplay
+import configparser
 from neopixel import *
 
 # LED strip configuration:
@@ -20,8 +21,13 @@ class WS2812B(AbstractDisplay):
         super().__init__(width, height)
         self._brightness = 0.3
 
+        self.config = configparser.ConfigParser()
+        self.config.read("settings.conf")
+
+        self.led_brightness = self.config.getint('tidsram_display','brightness')
+
         # Create NeoPixel object with appropriate configuration.
-        self.strip = Adafruit_NeoPixel(LED_COUNT, LED_PIN, LED_FREQ_HZ, LED_DMA, LED_INVERT, LED_BRIGHTNESS, LED_CHANNEL, ws.WS2811_STRIP_GRB)
+        self.strip = Adafruit_NeoPixel(LED_COUNT, LED_PIN, LED_FREQ_HZ, LED_DMA, LED_INVERT, self.led_brightness, LED_CHANNEL, ws.WS2811_STRIP_GRB)
         
         # Intialize the library (must be called once before other functions).
         self.strip.begin()
@@ -35,7 +41,7 @@ class WS2812B(AbstractDisplay):
                 index = self.get_led_index(i,j)
                 self.strip.setPixelColor(index,color)
 
-        brightness = int(LED_BRIGHTNESS*self._brightness)
+        brightness = int(self.led_brightness*self._brightness)
         self.strip.setBrightness(brightness)
         self.strip.show()
         return

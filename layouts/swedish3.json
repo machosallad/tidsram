@@ -14,17 +14,17 @@
         "past": {"word": "ÖVER", "index": 36}
     },
     "hours": {
-        "one": {"word": "ETT", "index": 48},
-        "two": {"word": "TVÅ", "index": 52},
-        "three": {"word": "TRE", "index": 56},
-        "four": {"word": "FYRA", "index": 61},
-        "five": {"word": "FEM", "index": 66},
-        "six": {"word": "SEX", "index": 75},
-        "seven": {"word": "SJU", "index": 79},
-        "eight": {"word": "ÅTTA", "index": 86},
-        "nine": {"word": "NIO", "index": 100},
+        "one": {"word": "ETT", "index": 49},
+        "two": {"word": "TVÅ", "index": 53},
+        "three": {"word": "TRE", "index": 63},
+        "four": {"word": "FYRA", "index": 68},
+        "five": {"word": "FEM", "index": 72},
+        "six": {"word": "SEX", "index": 77},
+        "seven": {"word": "SJU", "index": 86},
+        "eight": {"word": "ÅTTA", "index": 90},
+        "nine": {"word": "NIO", "index": 97},
         "ten": {"word": "TIO", "index": 105},
-        "eleven": {"word": "ELVA", "index": 108},
+        "eleven": {"word": "ELVA", "index": 112},
         "twelve": {"word": "TOLV", "index": 127}
     },
     "day": {
