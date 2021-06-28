@@ -4,7 +4,7 @@ import numpy as np
 import sys
 from display.abstract_display import AbstractDisplay
 import configparser
-from neopixel import *
+from rpi_ws281x import *
 
 # LED strip configuration:
 LED_COUNT      = 256      # Number of LED pixels.
@@ -25,6 +25,7 @@ class WS2812B(AbstractDisplay):
         self.config.read("settings.conf")
 
         self.led_brightness = self.config.getint('tidsram_display','brightness')
+        self.reverse_mirror = self.config.getboolean('tidsram_display','reverse_mirror')
 
         # Create NeoPixel object with appropriate configuration.
         self.strip = Adafruit_NeoPixel(LED_COUNT, LED_PIN, LED_FREQ_HZ, LED_DMA, LED_INVERT, self.led_brightness, LED_CHANNEL, ws.WS2811_STRIP_GRB)
@@ -49,10 +50,16 @@ class WS2812B(AbstractDisplay):
     def get_led_index(self, x, y):
         """ Determines if the row is even or odd and returns a new index based on X and Y""" 
         pos = 0
-        if x & 0x1:
-            pos = x * self.height + (self.height - 1 - y)
+        if self.reverse_mirror:
+            if x & 0x1:
+                pos = (self.height * (self.height - x)) - self.height + (self.height - 1 - y)
+            else:
+                pos = (self.height * (self.height - x)) - self.height + y
         else:
-            pos = x * self.height + y
+            if x & 0x1:
+                pos = x * self.height + (self.height - 1 - y)
+            else:
+                pos = x * self.height + y
 
         return pos
 
