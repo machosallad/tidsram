@@ -15,8 +15,6 @@ def indexes(entry):
     length = len(word)
     return [*range(index,index+length)]
 
-SIMULATE = True
-
 class ClockSource(AbstractSource):
     def __init__(self, width=16, height=16):
         """Init the class"""
@@ -39,8 +37,8 @@ class ClockSource(AbstractSource):
         self.simulate = self.config.getboolean('tidsram','simulate')
 
         self._on_color = (255, 255, 255)
-        self._off_color = (100, 100, 100)
-        
+        self._off_color = (0, 0, 0)
+
         self.__construct_word_arrays()
 
     def __construct_word_arrays(self):
@@ -110,7 +108,7 @@ class ClockSource(AbstractSource):
     def update(self, dt):
         """Update the source. Checks current time and refreshes the internal buffer."""
         hour, minute, second, weekday = self.__getCurrentTime(
-        ) if not SIMULATE else self.__getSimulateTime()
+        ) if not self.simulate else self.__getSimulateTime()
         self._buffer = self.__construct_buffer(hour, minute, second, weekday)
 
     def __getCurrentTime(self):
