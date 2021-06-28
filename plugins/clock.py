@@ -36,12 +36,12 @@ class ClockSource(AbstractSource):
         self.soon = []
         self.simulate = self.config.getboolean('tidsram_clock','simulate')
 
-        on_r = self.config.getboolean('tidsram','on_r')
-        on_g = self.config.getboolean('tidsram','on_g')
-        on_b = self.config.getboolean('tidsram','on_b')
-        off_r = self.config.getboolean('tidsram','off_r')
-        off_g = self.config.getboolean('tidsram','off_g')
-        off_b = self.config.getboolean('tidsram','off_b')
+        on_r = self.config.getboolean('tidsram_clock','on_r')
+        on_g = self.config.getboolean('tidsram_clock','on_g')
+        on_b = self.config.getboolean('tidsram_clock','on_b')
+        off_r = self.config.getboolean('tidsram_clock','off_r')
+        off_g = self.config.getboolean('tidsram_clock','off_g')
+        off_b = self.config.getboolean('tidsram_clock','off_b')
 
         self._on_color = (on_r, on_g, on_b)
         self._off_color = (off_r, off_g, off_b)
