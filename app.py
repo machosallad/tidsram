@@ -12,6 +12,7 @@ import abc
 import numpy as np
 import time
 import pygame
+import io
 from io import BytesIO
 from pathlib import Path
 from plugins.clock import ClockSource
@@ -26,10 +27,9 @@ class WordClock():
         # Change working directory
         os.chdir(os.path.dirname(os.path.abspath(__file__)))
         
-        if platform.system() == "Linux":
-            if os.name()[1] == 'raspberrypi':
-                from display.ws2812b import WS2812B
-                self.display = WS2812B(DISPLAY_WIDTH,DISPLAY_HEIGTH)
+        if is_raspberrypi():
+            from display.ws2812b import WS2812B
+            self.display = WS2812B(DISPLAY_WIDTH,DISPLAY_HEIGTH)
         else:
             from display.computer import Computer
             self.display = Computer(DISPLAY_WIDTH, DISPLAY_HEIGTH,5,50)
@@ -54,6 +54,13 @@ class WordClock():
         return
 
 # Function declarations
+
+def is_raspberrypi():
+    try:
+        with io.open('/sys/firmware/devicetree/base/model', 'r') as m:
+            if 'raspberry pi' in m.read().lower(): return True
+    except Exception: pass
+    return False
 
 # Main body
 if __name__ == "__main__":
