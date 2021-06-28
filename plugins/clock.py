@@ -138,7 +138,7 @@ class ClockSource(AbstractSource):
     def __constructIndexes(self, hour, minute, second, weekday):
         """Get array of indexes which map with words to light up."""
         # Check if an hour should be added
-        additional_hour = 1 if (minute >= 35) else 0
+        additional_hour = 1 if (minute >= 24) else 0
 
         hour_index = hour % 12 + additional_hour
         minute_index = int(minute/5)
