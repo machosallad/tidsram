@@ -34,10 +34,17 @@ class ClockSource(AbstractSource):
         self.weekdays = []
         self.prefix = []
         self.soon = []
-        self.simulate = self.config.getboolean('tidsram','simulate')
+        self.simulate = self.config.getboolean('tidsram_clock','simulate')
 
-        self._on_color = (255, 255, 255)
-        self._off_color = (0, 0, 0)
+        on_r = self.config.getboolean('tidsram','on_r')
+        on_g = self.config.getboolean('tidsram','on_g')
+        on_b = self.config.getboolean('tidsram','on_b')
+        off_r = self.config.getboolean('tidsram','off_r')
+        off_g = self.config.getboolean('tidsram','off_g')
+        off_b = self.config.getboolean('tidsram','off_b')
+
+        self._on_color = (on_r, on_g, on_b)
+        self._off_color = (off_r, off_g, off_b)
 
         self.__construct_word_arrays()
 
