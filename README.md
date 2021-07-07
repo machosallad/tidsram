@@ -18,3 +18,9 @@ The code and build is inspired by the following makers:
 ## Font
 
 D-DIN font by Datto licensed under the [SIL Open Font License (OFL)](https://scripts.sil.org/cms/scripts/page.php?site_id=nrsi&id=OFL).
+
+## Configuration
+
+A configuration file allows the user to make adjustments to the application. Such as: LED brightness & color, run simulated time etc.
+Make a copy of `settings.conf.example`, save it as `settings.conf` and then change the available fields to suitable values.
+The configuration is read when the application starts, so make sure to restart the application for the change to take effect.
