@@ -19,7 +19,6 @@ LED_CHANNEL    = 0       # set to '1' for GPIOs 13, 19, 41, 45 or 53
 class WS2812B(AbstractDisplay):
     def __init__(self, width=16, height=16):
         super().__init__(width, height)
-        self._brightness = 0.3
 
         self.config = configparser.ConfigParser()
         self.config.read("settings.conf")
