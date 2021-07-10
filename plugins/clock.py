@@ -7,6 +7,7 @@ import datetime
 from plugins.abstract import AbstractSource
 import json
 import configparser
+from PIL import ImageColor
 
 def indexes(entry):
     """Words to LED indexes mapping."""
@@ -111,6 +112,25 @@ class ClockSource(AbstractSource):
     @off_color.setter
     def off_color(self, color):
         self._off_color = color
+
+    @property
+    def topics(self):
+        return ["tidsram/plugin/clock/on", "tidsram/plugin/clock/off"]
+
+    @property
+    def subscription_filter(self):
+        return "tidsram/plugin/clock/#"
+
+    def callback(self, client, userdata, msg):
+        print("%s %s" % (msg.topic, msg.payload))
+
+        try:
+            if msg.topic == "tidsram/plugin/clock/on":
+                self.on_color = ImageColor.getcolor(msg.payload.decode("utf-8"), "RGB")
+            elif msg.topic == "tidsram/plugin/clock/off":
+                self.off_color = ImageColor.getcolor(msg.payload.decode("utf-8"), "RGB")
+        except ValueError as ve:
+            print("Invalid RGB value")
 
     def update(self, dt):
         """Update the source. Checks current time and refreshes the internal buffer."""
