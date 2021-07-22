@@ -4,7 +4,6 @@ import abc
 import numpy as np
 import time
 
-
 class AbstractDisplay(abc.ABC):
     def __init__(self, width=16, height=16):
         self.width = width
@@ -32,6 +31,24 @@ class AbstractDisplay(abc.ABC):
     @abc.abstractmethod
     def show(self, gamma=False):
         """ Display the content of the buffer."""
+
+    @property
+    def topics(self):
+        """Get an array of of topics which the display driver accepts"""
+        return ["tidsram/display/brightness"]
+
+    @property
+    def subscription_filter(self):
+        """Topic filter used to trigger the callback method"""
+        return "tidsram/display/#"
+
+    def callback(self, client, userdata, msg):
+        """Method which should be called when a topic is updated which matches the subscription filter"""
+        try:
+            if msg.topic == "tidsram/display/brightness":
+                self.brightness = float(msg.payload.decode("utf-8"))
+        except ValueError as ve:
+            print("Invalid brightness value")
 
     @property
     def brightness(self):

@@ -44,20 +44,22 @@ class WordClock():
         print("Connected with result code "+str(rc))
 
         # Subscribe to topics from the display
-        client.subscribe("tidsram/display/brightness")
+        for topic in self.display.topics:
+            client.subscribe(topic)
 
         # Subscribe to topics from plugins
         for topic in self.source.topics:
             client.subscribe(topic)
         
+        # Add callback for the display
+        client.message_callback_add(self.display.subscription_filter, self.display.callback)
+
         # Add callback for plugins using filter
         client.message_callback_add(self.source.subscription_filter,self.source.callback)
 
     # The callback for when a PUBLISH message is received from the server.
     def on_mqtt_message(self, client, userdata, msg):
         print(msg.topic+" "+str(msg.payload))
-        if msg.topic == "tidsram/display/brightness":
-            self.display.brightness = float(msg.payload.decode("utf-8"))
 
     def mainloop(self):
         # Prepare and start loading resources
