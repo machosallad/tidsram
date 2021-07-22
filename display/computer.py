@@ -68,7 +68,7 @@ class Computer(AbstractDisplay):
 
         # Create the window
         self.surface = pygame.display.set_mode(self.window_size)
-        pygame.display.set_caption("ord-klocka {}x{}".format(width, height))
+        pygame.display.set_caption("tidsram {}x{}".format(width, height))
         self.show()
 
     def show(self, gamma=False):
