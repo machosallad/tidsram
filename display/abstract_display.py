@@ -4,6 +4,7 @@ import abc
 import numpy as np
 import time
 
+
 class AbstractDisplay(abc.ABC):
     def __init__(self, width=16, height=16):
         self.width = width
@@ -21,7 +22,6 @@ class AbstractDisplay(abc.ABC):
     def buffer(self, value):
         if isinstance(value, np.ndarray):
             if self._buffer.shape == value.shape:
-                #del self._buffer
                 self._buffer = value
 
     def clear_buffer(self):
@@ -30,7 +30,7 @@ class AbstractDisplay(abc.ABC):
 
     @abc.abstractmethod
     def show(self, gamma=False):
-        """ Display the content of the buffer."""
+        """Display the content of the buffer."""
 
     @property
     def topics(self):
@@ -52,7 +52,7 @@ class AbstractDisplay(abc.ABC):
 
     @property
     def brightness(self):
-        """ Get current brightness level (0.0 to 1.0)."""
+        """Get current brightness level (0.0 to 1.0)."""
         return self._brightness
 
     @brightness.setter
@@ -65,10 +65,10 @@ class AbstractDisplay(abc.ABC):
             self._brightness = value
 
     def set_pixel_at_index(self, index, color):
-        if(index < 0) or (index > self.number_of_pixels):
+        if (index < 0) or (index > self.number_of_pixels):
             return
         index *= 3
-        self._buffer.put([index, index+1, index+2], color)
+        self._buffer.put([index, index + 1, index + 2], color)
 
     def set_pixel_at_coord(self, x, y, color):
         if (x < 0) or (x >= self.width) or (y < 0) or (y >= self.height):
@@ -110,7 +110,10 @@ class AbstractDisplay(abc.ABC):
             end = time.time()
             diff = end - start
             total = total + diff
-        print("{:.2f}s for {} iterations. {:d} refreshs per second".format(
-            total, repeat, int(repeat/total)))
+        print(
+            "{:.2f}s for {} iterations. {:d} refreshs per second".format(
+                total, repeat, int(repeat / total)
+            )
+        )
         self.clear_buffer()
         self.show()
