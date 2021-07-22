@@ -4,7 +4,7 @@
 import time
 import numpy as np
 import datetime
-from plugins.abstract import AbstractSource
+from plugins.abstract import AbstractPlugin
 import json
 import configparser
 from PIL import ImageColor
@@ -16,7 +16,7 @@ def indexes(entry):
     length = len(word)
     return [*range(index,index+length)]
 
-class ClockSource(AbstractSource):
+class ClockPlugin(AbstractPlugin):
     def __init__(self, width=16, height=16):
         """Init the class"""
         super().__init__(width, height)

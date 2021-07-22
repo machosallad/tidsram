@@ -5,7 +5,7 @@ import numpy as np
 import time
 from enum import Enum
 
-class AbstractSource(abc.ABC):
+class AbstractPlugin(abc.ABC):
     def __init__(self,width=16, height=16):
         self.width = width
         self.height = height

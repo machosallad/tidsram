@@ -15,9 +15,8 @@ import pygame
 import io
 from io import BytesIO
 from pathlib import Path
-from plugins.clock import ClockSource
+from plugins.clock import ClockPlugin
 import paho.mqtt.client as mqtt
-from PIL import ImageColor
 
 # Global variables
 DISPLAY_WIDTH = 12
@@ -37,7 +36,7 @@ class WordClock():
             self.display = Computer(DISPLAY_WIDTH, DISPLAY_HEIGTH,5,50)
 
         # Sources
-        self.source = ClockSource(DISPLAY_HEIGTH,DISPLAY_HEIGTH)
+        self.source = ClockPlugin(DISPLAY_HEIGTH,DISPLAY_HEIGTH)
         self.display.brightness = 1
 
     # The callback for when the client receives a CONNACK response from the server.
