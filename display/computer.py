@@ -33,11 +33,12 @@ class Computer(AbstractDisplay):
         pygame.init()
         pygame.font.init()
 
+        self.section = "tidsram_computer"
         self.config = configparser.ConfigParser()
         self.config.read("settings.conf")
 
-        self.fill_empty = self.config.getboolean("tidsram_computer", "fill_empty")
-        self.show_index = self.config.getboolean("tidsram_computer", "show_index")
+        self.fill_empty = self.config.getboolean(self.section, "fill_empty")
+        self.show_index = self.config.getboolean(self.section, "show_index")
 
         # Load fonts
         self.index_font = pygame.font.SysFont("arial", 12)

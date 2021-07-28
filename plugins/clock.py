@@ -24,6 +24,7 @@ class ClockPlugin(AbstractPlugin):
         super().__init__(width, height)
         self.config = configparser.ConfigParser()
         self.config.read("settings.conf")
+        self.section = "tidsram_clock"
 
         self.fps = 5
 
@@ -37,17 +38,9 @@ class ClockPlugin(AbstractPlugin):
         self.weekdays = []
         self.prefix = []
         self.soon = []
-        self.simulate = self.config.getboolean("tidsram_clock", "simulate")
-
-        on_r = self.config.getint("tidsram_clock", "on_r")
-        on_g = self.config.getint("tidsram_clock", "on_g")
-        on_b = self.config.getint("tidsram_clock", "on_b")
-        off_r = self.config.getint("tidsram_clock", "off_r")
-        off_g = self.config.getint("tidsram_clock", "off_g")
-        off_b = self.config.getint("tidsram_clock", "off_b")
-
-        self._on_color = (on_r, on_g, on_b)
-        self._off_color = (off_r, off_g, off_b)
+        self.simulate = self.config.getboolean(self.section, "simulate")
+        self._on_color = ImageColor.getcolor(self.config.get(self.section, "on_rgb"), "RGB")
+        self._off_color = ImageColor.getcolor(self.config.get(self.section, "off_rgb"), "RGB")
 
         self.__construct_word_arrays()
 

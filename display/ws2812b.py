@@ -23,10 +23,11 @@ class WS2812B(AbstractDisplay):
 
         self.config = configparser.ConfigParser()
         self.config.read("settings.conf")
+        self.section = "tidsram_display"
 
-        self.led_brightness = self.config.getint("tidsram_display", "brightness")
+        self.led_brightness = self.config.getint(self.section, "brightness")
         self.reverse_mirror = self.config.getboolean(
-            "tidsram_display", "reverse_mirror"
+            self.section, "reverse_mirror"
         )
 
         # Create NeoPixel object with appropriate configuration.
