@@ -18,6 +18,10 @@ def indexes(entry):
     return [*range(index, index + length)]
 
 
+def rgb2hex(rgb):
+    return "#{:02x}{:02x}{:02x}".format(rgb[0], rgb[1], rgb[2])
+
+
 class ClockPlugin(AbstractPlugin):
     def __init__(self, width=16, height=16):
         """Init the class"""
@@ -125,10 +129,15 @@ class ClockPlugin(AbstractPlugin):
         try:
             if msg.topic == "tidsram/plugin/clock/on":
                 self.on_color = ImageColor.getcolor(msg.payload.decode("utf-8"), "RGB")
+                self.config.set(self.section, "on_rgb", rgb2hex(self.on_color))
             elif msg.topic == "tidsram/plugin/clock/off":
                 self.off_color = ImageColor.getcolor(msg.payload.decode("utf-8"), "RGB")
+                self.config.set(self.section, "off_rgb", rgb2hex(self.off_color))
         except ValueError as ve:
             print("Invalid RGB value")
+
+        with open("settings.conf", "w") as configfile:
+            self.config.write(configfile)
 
     def update(self, dt):
         """Update the source. Checks current time and refreshes the internal buffer."""
