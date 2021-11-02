@@ -3,12 +3,8 @@ developer_mode = True
 
 [tidsram_clock]
 simulate = False
-on_r = 255
-on_g = 255 
-on_b = 255
-off_r = 0
-off_g = 0
-off_b = 0
+on_rgb = #FFF
+off_rgb = #000
 
 [tidsram_display]
 layout = layouts/swedish3.json

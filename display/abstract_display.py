@@ -22,7 +22,6 @@ class AbstractDisplay(abc.ABC):
     def buffer(self, value):
         if isinstance(value, np.ndarray):
             if self._buffer.shape == value.shape:
-                #del self._buffer
                 self._buffer = value
 
     def clear_buffer(self):
@@ -31,11 +30,29 @@ class AbstractDisplay(abc.ABC):
 
     @abc.abstractmethod
     def show(self, gamma=False):
-        """ Display the content of the buffer."""
+        """Display the content of the buffer."""
+
+    @property
+    def topics(self):
+        """Get an array of of topics which the display driver accepts"""
+        return ["tidsram/display/brightness"]
+
+    @property
+    def subscription_filter(self):
+        """Topic filter used to trigger the callback method"""
+        return "tidsram/display/#"
+
+    def callback(self, client, userdata, msg):
+        """Method which should be called when a topic is updated which matches the subscription filter"""
+        try:
+            if msg.topic == "tidsram/display/brightness":
+                self.brightness = float(msg.payload.decode("utf-8"))
+        except ValueError as ve:
+            print("Invalid brightness value")
 
     @property
     def brightness(self):
-        """ Get current brightness level (0.0 to 1.0)."""
+        """Get current brightness level (0.0 to 1.0)."""
         return self._brightness
 
     @brightness.setter
@@ -48,10 +65,10 @@ class AbstractDisplay(abc.ABC):
             self._brightness = value
 
     def set_pixel_at_index(self, index, color):
-        if(index < 0) or (index > self.number_of_pixels):
+        if (index < 0) or (index > self.number_of_pixels):
             return
         index *= 3
-        self._buffer.put([index, index+1, index+2], color)
+        self._buffer.put([index, index + 1, index + 2], color)
 
     def set_pixel_at_coord(self, x, y, color):
         if (x < 0) or (x >= self.width) or (y < 0) or (y >= self.height):
@@ -93,7 +110,10 @@ class AbstractDisplay(abc.ABC):
             end = time.time()
             diff = end - start
             total = total + diff
-        print("{:.2f}s for {} iterations. {:d} refreshs per second".format(
-            total, repeat, int(repeat/total)))
+        print(
+            "{:.2f}s for {} iterations. {:d} refreshs per second".format(
+                total, repeat, int(repeat / total)
+            )
+        )
         self.clear_buffer()
         self.show()
