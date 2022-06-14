@@ -37,6 +37,6 @@
         "sunday": {"word": "S", "index": 138}
     },
     "others": {
-        "1": {"word": "MELIN", "index": 139}
+        "signature": {"word": "MELIN", "index": 139}
     }
 }
