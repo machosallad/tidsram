@@ -5,6 +5,8 @@ developer_mode = True
 simulate = False
 on_rgb = #FFF
 off_rgb = #000
+day_rgb = #FFF
+signature_rgb = #FFF
 
 [tidsram_display]
 layout = layouts/swedish3.json

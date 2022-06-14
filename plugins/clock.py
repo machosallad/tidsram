@@ -9,7 +9,6 @@ import json
 import configparser
 from PIL import ImageColor
 
-
 def indexes(entry):
     """Words to LED indexes mapping."""
     word = entry["word"]
@@ -42,9 +41,12 @@ class ClockPlugin(AbstractPlugin):
         self.weekdays = []
         self.prefix = []
         self.soon = []
+        self.signature = []
         self.simulate = self.config.getboolean(self.section, "simulate")
         self._on_color = ImageColor.getcolor(self.config.get(self.section, "on_rgb"), "RGB")
         self._off_color = ImageColor.getcolor(self.config.get(self.section, "off_rgb"), "RGB")
+        self._day_color = ImageColor.getcolor(self.config.get(self.section, "day_rgb"), "RGB")
+        self._signature_color = ImageColor.getcolor(self.config.get(self.section, "signature_rgb"), "RGB")
 
         self.__construct_word_arrays()
 
@@ -54,6 +56,7 @@ class ClockPlugin(AbstractPlugin):
 
         self.prefix = indexes(layout["prefix"]["she"]) + indexes(layout["prefix"]["is"])
         self.soon = indexes(layout["prefix"]["soon"])
+        self.signature = indexes(layout["others"]["signature"])
 
         self.minutes = [
             [],
@@ -116,8 +119,24 @@ class ClockPlugin(AbstractPlugin):
         self._off_color = color
 
     @property
+    def day_color(self):
+        return self._day_color
+
+    @day_color.setter
+    def day_color(self, color):
+        self._day_color = color
+
+    @property
+    def signature_color(self):
+        return self._signature_color
+
+    @signature_color.setter
+    def signature_color(self, color):
+        self._signature_color = color
+
+    @property
     def topics(self):
-        return ["tidsram/plugin/clock/on", "tidsram/plugin/clock/off"]
+        return ["tidsram/plugin/clock/on", "tidsram/plugin/clock/off", "tidsram/plugin/clock/day", "tidsram/plugin/clock/signature"]
 
     @property
     def subscription_filter(self):
@@ -127,12 +146,19 @@ class ClockPlugin(AbstractPlugin):
         print("%s %s" % (msg.topic, msg.payload))
 
         try:
+            color = ImageColor.getcolor(msg.payload.decode("utf-8"), "RGB")
             if msg.topic == "tidsram/plugin/clock/on":
-                self.on_color = ImageColor.getcolor(msg.payload.decode("utf-8"), "RGB")
+                self.on_color = color
                 self.config.set(self.section, "on_rgb", rgb2hex(self.on_color))
             elif msg.topic == "tidsram/plugin/clock/off":
-                self.off_color = ImageColor.getcolor(msg.payload.decode("utf-8"), "RGB")
+                self.off_color = color
                 self.config.set(self.section, "off_rgb", rgb2hex(self.off_color))
+            elif msg.topic == "tidsram/plugin/clock/day":
+                self._day_color = color
+                self.config.set(self.section, "day_rgb", rgb2hex(self.day_color))
+            elif msg.topic == "tidsram/plugin/clock/signature":
+                self._signature_color = color
+                self.config.set(self.section, "signature_rgb", rgb2hex(self.signature_color))
         except ValueError as ve:
             print("Invalid RGB value")
 
@@ -187,6 +213,7 @@ class ClockPlugin(AbstractPlugin):
             + self.hours[hour_index]
             + self.weekdays[weekday]
             + soon
+            + self.signature
         )
 
     def __construct_buffer(self, hour, minute, second, weekday):
@@ -199,7 +226,12 @@ class ClockPlugin(AbstractPlugin):
         for column in range(self.width):
             for row in range(self.height):
                 if index in led_indexes:
-                    buffer[column, row] = self.on_color
+                    if index in range(139, 144):
+                        buffer[column, row] = self.signature_color
+                    elif index in range(132, 139):
+                        buffer[column, row] = self.day_color
+                    else:
+                        buffer[column, row] = self.on_color
                 else:
                     buffer[column, row] = self.off_color
 
